@@ -16,8 +16,9 @@ class Wmata(object):
 
     base_url = 'http://api.wmata.com/%(svc)s.svc/json/%(endpoint)s'
 
-    def __init__(self, apikey):
+    def __init__(self, apikey, timeout=30):
         self.apikey = apikey
+        self.timeout = timeout
 
     def _build_url(self, svc, endpoint, query={}):
         query.update({'api_key': self.apikey})
@@ -27,7 +28,7 @@ class Wmata(object):
 
     def _get(self, svc, endpoint, query={}):
         self.url = self._build_url(svc, endpoint, query)
-        response = urlopen(self.url)
+        response = urlopen(self.url, None, self.timeout)
 
         if response.msg == 'OK':
             self.data = json.loads(response.read())
